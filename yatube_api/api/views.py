@@ -43,8 +43,13 @@ class FollowViewSet(viewsets.ModelViewSet):
     queryset = Follow.objects.all()
     serializer_class = FollowSerializer
     permissions_classes = (IsAuthorOrReadOnly, )
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['=user__username', '=following__username']
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter)
+    search_fields = ('following__username',)
+ 
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Follow.objects.filter(user=user)
+        return queryset
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
