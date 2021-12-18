@@ -1,7 +1,10 @@
 from rest_framework import serializers
 from rest_framework.relations import SlugRelatedField
+from django.contrib.auth import get_user_model
 
-from posts.models import Comment, Post, Group
+from posts.models import Comment, Post, Group, Follow
+
+User = get_user_model()
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -26,3 +29,17 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = Comment
+
+class FollowSerializer(serializers.ModelSerializer):
+    user = serializers.SlugRelatedField(slug_field='username', read_only=True)
+    following = serializers.SlugRelatedField(slug_field='username', queryset=User.objects.all())
+
+    class Meta:
+        fields = ('user', 'following')
+        model = Follow
+
+    def validate_following(self, value):
+        user = self.context['request'].user
+        if Follow.objects.filter(user=user, following__username=value).exists():
+            raise serializers.ValidationError("Вы уже подписаны на данного автора")
+        return value
