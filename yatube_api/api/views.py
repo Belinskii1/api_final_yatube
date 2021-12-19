@@ -16,7 +16,6 @@ class PostViewSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer
     pagination_class = LimitOffsetPagination
 
-
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
@@ -42,10 +41,10 @@ class CommentViewSet(viewsets.ModelViewSet):
 class FollowViewSet(viewsets.ModelViewSet):
     queryset = Follow.objects.all()
     serializer_class = FollowSerializer
-    permissions_classes = (IsAuthorOrReadOnly, )
+    permissions_classes = (IsAuthenticated, )
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)
-    search_fields = ('following__username',)
- 
+    search_fields = ('following__username', 'user__username',)
+
     def get_queryset(self):
         user = self.request.user
         queryset = Follow.objects.filter(user=user)
