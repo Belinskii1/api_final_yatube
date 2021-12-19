@@ -30,9 +30,18 @@ class Post(models.Model):
 
 class Comment(models.Model):
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='comments', blank=True, null=True)
+        User, on_delete=models.CASCADE,
+        related_name='comments',
+        blank=True,
+        null=True
+    )
     post = models.ForeignKey(
-        Post, on_delete=models.CASCADE, related_name='comments', blank=True, null=True)
+        Post,
+        on_delete=models.CASCADE,
+        related_name='comments',
+        blank=True,
+        null=True
+    )
     text = models.TextField()
     created = models.DateTimeField(
         'Дата добавления', auto_now_add=True, db_index=True)
@@ -53,6 +62,6 @@ class Follow(models.Model):
                 name='unique_object'
             ),
         ]
-     
+
     def __str__(self):
         return f'Пользователь {self.user} подписан на {self.following}'
