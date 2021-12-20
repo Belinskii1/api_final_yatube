@@ -12,7 +12,7 @@ router_v1.register(
     CommentViewSet,
     basename='comments'
 )
-router_v1.register(r'follow', FollowViewSet)
+router_v1.register(r'follow', FollowViewSet, basename='follow')
 
 
 app_name = 'api'
